@@ -4,7 +4,7 @@ Implementation of a TCP socket API that wraps Windows and Linux sockets.
 
 ### Usage
 
-```
+```c++
 #include "tcp_socket.h"
 
 using namespace tcp_socket;
