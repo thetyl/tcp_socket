@@ -20,7 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <unordered_map>
 #include <string>
 
 #ifdef _WIN32
@@ -186,5 +185,25 @@ namespace tcp_socket {
 		}
 
 		return num_bytes;
+	}
+	
+	bool select(fd_set * read_set, fd_set * write_set, int *_num_ready) {
+		int num_ready = ::select(FD_SETSIZE, read_set, write_set, nullptr, nullptr);
+
+#ifdef _WIN32
+		if (num_ready == SOCKET_ERROR) {
+			last_error = WSAGetLastError();
+#else
+		if (num_ready == -1) {
+			last_error = strerror(errno);
+#endif
+			return false;
+		}
+
+		if (_num_ready != nullptr) {
+			*_num_ready = num_ready;
+		}
+
+		return true;
 	}
 }
